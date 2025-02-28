@@ -1,5 +1,0 @@
-fastapi
-uvicorn
-nbconvert
-nbformat
-python-multipart

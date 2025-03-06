@@ -3,6 +3,7 @@ from fastapi import FastAPI, File, UploadFile, Form, HTTPException
 import nbformat
 from nbconvert import MarkdownExporter
 from pathlib import Path
+import json
 
 app = FastAPI()
 UPLOAD_FOLDER = Path("uploads")
@@ -14,7 +15,8 @@ async def upload_and_convert(file: UploadFile = File(...), nb2md: bool = Form(Fa
     # Convert notebook to Markdown without saving .ipynb
     md_path = UPLOAD_FOLDER / (Path(file.filename).stem + ".md")
     try:
-      nb_content = nbformat.reads(await file.read(), as_version=4)
+      file_content = await file.read()
+      nb_content = nbformat.reads(file_content, as_version=json.loads(file_content)['nbformat'])
       md_exporter = MarkdownExporter()
       md_body, _ = md_exporter.from_notebook_node(nb_content)
 
